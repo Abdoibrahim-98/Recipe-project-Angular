@@ -7,6 +7,7 @@ import { Subject } from "rxjs";
 
 @Injectable()
 export class RecipeService{
+    recipesChanged = new Subject<Recipe[]>(); 
     recipeSelected = new Subject<Recipe>();
     private recipes: Recipe[] = [
         new Recipe('Kebab','A very delicious turkish Kebab','https://www.ndtv.com/cooks/images/seekh-kebab-620.jpg',[new Ingredient('Lamb', 1), new Ingredient('Black pepper',2)]),
@@ -26,5 +27,18 @@ export class RecipeService{
 
       addIngredientsToShoppingList(ingredients: Ingredient[]){
         this.slService.addIngredients(ingredients);
+      }
+
+      updateRecipe(id:number, recipe:Recipe){
+        this.recipes[id]= recipe;
+        this.recipesChanged.next(this.recipes.slice());
+      }
+      addRecipe(recipe: Recipe){
+        this.recipes.push(recipe);
+        this.recipesChanged.next(this.recipes.slice());
+      }
+      deleteRecipe(id: number){
+        this.recipes.splice(id,1);
+        this.recipesChanged.next(this.recipes.slice());
       }
 }
